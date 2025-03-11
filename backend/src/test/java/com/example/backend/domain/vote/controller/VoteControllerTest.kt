@@ -98,6 +98,31 @@ class VoteControllerTest {
     }
 
     @Test
+    fun `투표 생성 테스트2 (인증 성공)`() {
+        // given
+        val groupId = 1L
+        val accessTokenCookie = Cookie("accessToken", accessToken)
+
+        // when
+        val resultActions = mockMvc.perform(
+            post("/votes/groups/$groupId/votes")
+                .cookie(accessTokenCookie)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(voteRequestDto))
+        )
+
+        // then
+        resultActions
+            .andDo(print())
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.location").value(voteRequestDto.location))
+            .andExpect(jsonPath("$.address").value(voteRequestDto.address))
+            .andExpect(jsonPath("$.latitude").value(voteRequestDto.latitude))
+            .andExpect(jsonPath("$.longitude").value(voteRequestDto.longitude))
+            .andExpect(jsonPath("$.createdAt").exists())
+    }
+
+    @Test
     fun `투표 생성 실패 테스트(인증없음)`() {
         // given
         val groupId = 1L
@@ -115,24 +140,6 @@ class VoteControllerTest {
             .andExpect(status().isUnauthorized)
             .andExpect(jsonPath("$.message").value("인증에 실패했습니다."))
             .andExpect(jsonPath("$.code").value("401-1"))
-    }
-
-    @Test
-    fun `투표 생성 실패 테스트2 (인증없음)`() {
-        // given
-        val groupId = 1L
-
-        // when 위와 비교 : accesstoken 없음
-        val resultActions = mockMvc.perform(
-            post("/votes/groups/$groupId/votes")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(voteRequestDto))
-        )
-
-        // then
-        resultActions
-            .andDo(print())
-            .andExpect(status().isUnauthorized)
     }
 
     @Test

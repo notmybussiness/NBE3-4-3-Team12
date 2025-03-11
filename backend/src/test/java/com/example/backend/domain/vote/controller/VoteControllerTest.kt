@@ -118,6 +118,24 @@ class VoteControllerTest {
     }
 
     @Test
+    fun `투표 생성 실패 테스트2 (인증없음)`() {
+        // given
+        val groupId = 1L
+
+        // when 위와 비교 : accesstoken 없음
+        val resultActions = mockMvc.perform(
+            post("/votes/groups/$groupId/votes")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(voteRequestDto))
+        )
+
+        // then
+        resultActions
+            .andDo(print())
+            .andExpect(status().isUnauthorized)
+    }
+
+    @Test
     fun `그룹별 투표 목록 조회 테스트`() {
         // given
         val groupId = 1L

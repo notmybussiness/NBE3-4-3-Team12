@@ -1,10 +1,10 @@
 name: Gemini Code Review
 
 on:
-  push:
-    branches: [ main,  'feature/*'  ]
-    paths:
-      - 'backend/**'
+#  push:
+#    branches: [ main,  'feature/*'  ]
+#    paths:
+#      - 'backend/**'
   pull_request:
     types: [opened, synchronize]
 
@@ -36,12 +36,12 @@ jobs:
           git diff --unified=0 "origin/${{ github.event.pull_request.base.ref }}" > "diff.txt"
           echo "EVENT_TYPE=pull_request" >> $GITHUB_ENV
 
-      # Push 이벤트에서의 변경사항 처리
-      - name: Get git diff for Push
-        if: github.event_name == 'push'
-        run: |
-          git diff --unified=0 HEAD^ HEAD > "diff.txt"
-          echo "EVENT_TYPE=push" >> $GITHUB_ENV
+#      # Push 이벤트에서의 변경사항 처리
+#      - name: Get git diff for Push
+#        if: github.event_name == 'push'
+#        run: |
+#          git diff --unified=0 HEAD^ HEAD > "diff.txt"
+#          echo "EVENT_TYPE=push" >> $GITHUB_ENV
 
       # Gemini를 사용한 코드 분석
       - name: Run Gemini-1.5-flash
@@ -87,18 +87,18 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: 'github-actions[bot]'
           allow-repeats: false
-
-      # Push 이벤트: 액션 로그에 리뷰 결과 출력 및 아티팩트 업로드
-      - name: Display review results in workflow log
-        if: env.EVENT_TYPE == 'push'
-        run: |
-          echo "===== Gemini Code Review Results ====="
-          cat review_result.txt
-          echo "======================================"
-
-      - name: Upload review results as artifact
-        if: env.EVENT_TYPE == 'push'
-        uses: actions/upload-artifact@v4
-        with:
-          name: gemini-code-review
-          path: review_result.txt
+#
+#      # Push 이벤트: 액션 로그에 리뷰 결과 출력 및 아티팩트 업로드
+#      - name: Display review results in workflow log
+#        if: env.EVENT_TYPE == 'push'
+#        run: |
+#          echo "===== Gemini Code Review Results ====="
+#          cat review_result.txt
+#          echo "======================================"
+#
+#      - name: Upload review results as artifact
+#        if: env.EVENT_TYPE == 'push'
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: gemini-code-review
+#          path: review_result.txt

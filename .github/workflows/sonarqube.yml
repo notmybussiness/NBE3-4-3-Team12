@@ -80,4 +80,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        run: ./gradlew sonarqube --info --stacktrace
+          SONAR_SCANNER_OPTS: "-Dsonar.kotlin.file.suffixes=.kt -Dsonar.exclusions=**/*.gradle.kts,**/*.gradle"
+        run: ./gradlew sonarqube --info --stacktrace -Dsonar.kotlin.file.suffixes=.kt -Dsonar.exclusions=**/*.gradle.kts,**/*.gradle

@@ -125,16 +125,24 @@ tasks.jacocoTestReport {
 sonarqube {
     properties {
         property("sonar.projectKey", "backend")
-        property("sonar.projectName", "NBE3-4-3-Team12")
-        property("sonar.sourceEncoding", "UTF-8")
-        property("sonar.sources", listOf("src/main/java"))
-        property("sonar.tests", listOf("src/test/java"))
+        property("sonar.host.url", System.getenv("SONAR_HOST_URL") ?: "")
+        property("sonar.login", System.getenv("SONAR_TOKEN") ?: "")
 
-        // JaCoCo 관련 설정 제거
-        property("sonar.coverage.exclusions", "**/*.*")  // 모든 파일의 커버리지 분석 제외
-        property("sonar.cpd.exclusions", "**/*Test.java,**/*Test.kt")  // 테스트 코드 중복 검사 제외
-
-        // 소스 코드 분석에만 집중
-        property("sonar.java.binaries", "build/classes/java/main")
+        // 빌드 스크립트 분석 제외
+        property("sonar.exclusions", "**/*.gradle.kts,**/*.gradle")
     }
+//    properties {
+//        property("sonar.projectKey", "backend")
+//        property("sonar.projectName", "NBE3-4-3-Team12")
+//        property("sonar.sourceEncoding", "UTF-8")
+//        property("sonar.sources", listOf("src/main/java"))
+//        property("sonar.tests", listOf("src/test/java"))
+//        // 코틀린 소스 분석 설정 추가
+//        property("sonar.kotlin.file.suffixes", ".kt")
+//        // 빌드 스크립트 분석 제외
+//        property("sonar.exclusions", "**/*.gradle.kts,**/*.gradle")
+//
+//        // 커버리지 관련 설정
+//        property("sonar.coverage.exclusions", "**/*.*")
+//    }
 }

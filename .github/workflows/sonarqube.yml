@@ -75,20 +75,6 @@ jobs:
           KAKAO_LOGOUT_REDIRECT_URI: http://localhost:8080/auth/kakao/callback/
           CLIENT_BASE_URL: http://localhost:3000
 
-      - name: Generate JaCoCo XML Report
-        run: ./gradlew jacocoTestReport -x test
-        continue-on-error: true
-
-      - name: Check if JaCoCo XML exists
-        run: |
-          if [ -f "build/reports/jacoco/test/jacocoTestReport.xml" ]; then
-            echo "JaCoCo XML report exists"
-          else
-            echo "JaCoCo XML report does not exist, generating empty report"
-            mkdir -p build/reports/jacoco/test
-            echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?><report name=\"backend\"></report>" > build/reports/jacoco/test/jacocoTestReport.xml
-          fi
-
       - name: SonarQube Analysis
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

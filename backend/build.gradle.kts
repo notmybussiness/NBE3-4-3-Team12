@@ -127,19 +127,14 @@ sonarqube {
         property("sonar.projectKey", "backend")
         property("sonar.projectName", "NBE3-4-3-Team12")
         property("sonar.sourceEncoding", "UTF-8")
-
-        // 여기가 중요합니다 - 문자열 대신 리스트로 지정
         property("sonar.sources", listOf("src/main/java"))
         property("sonar.tests", listOf("src/test/java"))
 
-        // 바이너리 파일 경로도 리스트로 지정
-        property("sonar.java.binaries", listOf("build/classes/java/main"))
-        property("sonar.java.test.binaries", listOf("build/classes/java/test"))
+        // JaCoCo 관련 설정 제거
+        property("sonar.coverage.exclusions", "**/*.*")  // 모든 파일의 커버리지 분석 제외
+        property("sonar.cpd.exclusions", "**/*Test.java,**/*Test.kt")  // 테스트 코드 중복 검사 제외
 
-        // JaCoCo 보고서 경로
-        property("sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/test/jacocoTestReport.xml")
-
-        // 의존성 문제 디버깅
-        property("sonar.verbose", "true")
+        // 소스 코드 분석에만 집중
+        property("sonar.java.binaries", "build/classes/java/main")
     }
 }

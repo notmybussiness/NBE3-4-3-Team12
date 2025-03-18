@@ -3,10 +3,14 @@ plugins {
     id("io.spring.dependency-management") version "1.1.7"
     id("org.asciidoctor.jvm.convert") version "3.3.2"
     id("jacoco")  // JaCoCo 플러그인 추가
+    id("org.sonarqube") version "4.4.1.3373" // sonarqube 플러그인 추가
+
 
     kotlin("jvm") version "1.9.25"
     kotlin("plugin.spring") version "1.9.25"
     kotlin("plugin.jpa") version "1.9.25"
+
+
 }
 
 group = "com.example"
@@ -116,4 +120,16 @@ tasks.jacocoTestReport {
             include("**/domain/*/controller/**")
         }
     )
+}
+
+sonarqube {
+    properties {
+        property("sonar.projectKey", "backend")
+        property("sonar.projectName", "NBE3-4-3-Team12")
+        property("sonar.sourceEncoding", "UTF-8")
+        property("sonar.sources", "src/main")
+        property("sonar.tests", "src/test")
+        property("sonar.kotlin.coverage.reportPaths", "build/reports/jacoco/test/jacocoTestReport.xml")
+        property("sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/test/jacocoTestReport.xml")
+    }
 }

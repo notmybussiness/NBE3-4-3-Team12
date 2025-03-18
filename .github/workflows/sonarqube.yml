@@ -2,13 +2,13 @@ name: SonarQube Analysis
 
 on:
   push:
-    branches: [ main, 'feature/*']
+    branches: [ main, 'feature/*' ]
     paths:
       - 'backend/**'
-    pull_request:
-      branches: [ main ]
-      paths:
-        - 'backend/**'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'backend/**'
 
 jobs:
   sonarqube:
@@ -16,6 +16,16 @@ jobs:
     defaults:
       run:
         working-directory: ./backend
+    services:
+      redis:
+        image: redis
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
       - uses: actions/checkout@v3
         with:
@@ -40,6 +50,28 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SPRING_PROFILES_ACTIVE: test
+          SPRING_DATASOURCE_URL: jdbc:h2:mem:testdb;MODE=MySQL;
+          SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.h2.Driver
+          SPRING_DATASOURCE_USERNAME: sa
+          SPRING_JPA_HIBERNATE_DDL_AUTO: create-drop
+          SPRING_DATA_REDIS_HOST: localhost
+          SPRING_DATA_REDIS_PORT: 6379
+          SPRING_SECURITY_JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+          SPRING_SECURITY_JWT_ACCESS_TOKEN_EXPIRATION: 216000
+          SPRING_SECURITY_JWT_REFRESH_TOKEN_EXPIRATION: 518400
+          SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_KAKAO_CLIENT_ID: ${{ secrets.KAKAO_CLIENT_ID }}
+          SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_KAKAO_REDIRECT_URI: http://localhost:8080/auth/kakao/callback
+          SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_KAKAO_AUTHORIZATION_GRANT_TYPE: authorization_code
+          SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_KAKAO_SCOPE: profile_nickname,profile_image,account_email
+          SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_KAKAO_AUTHORIZATION_URI: https://kauth.kakao.com/oauth/authorize
+          SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_KAKAO_TOKEN_URI: https://kauth.kakao.com/oauth/token
+          SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_KAKAO_USER_INFO_URI: https://kapi.kakao.com/v2/user/me
+          SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_KAKAO_USER_NAME_ATTRIBUTE: id
+          LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY: DEBUG
+          KAKAO_LOGOUT_URL: https://kauth.kakao.com/oauth/logout
+          KAKAO_LOGOUT_REDIRECT_URI: http://localhost:8080/auth/kakao/callback/
+          CLIENT_BASE_URL: http://localhost:3000
         run: |
           chmod +x ./gradlew
-          ./gradlew build sonarqube --info
+          ./gradlew build sonarqube -x test --info

@@ -120,13 +120,11 @@ class VoterControllerTest {
             .andDo(print())
             .andExpect(status().isOk)
     }
-
     @Test
     @DisplayName("투표자 조회 성공")
     fun getVotersByVote_Success() {
         // JWT 인증을 위한 쿠키 생성
         val accessTokenCookie = Cookie("accessToken", accessToken)
-
         // 테스트를 위해 투표자 추가
         mockMvc.perform(
             post("/voters/${group.id}/${vote.id}")

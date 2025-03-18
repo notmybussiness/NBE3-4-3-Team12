@@ -32,7 +32,6 @@ import java.nio.charset.StandardCharsets
 @Transactional
 @ActiveProfiles("test")
 class CategoryControllerTest {
-
     @Autowired
     private lateinit var adminRepository: AdminRepository
 

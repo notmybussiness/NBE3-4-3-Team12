@@ -49,7 +49,6 @@ class AdminControllerTest(
                 "password": "1234"
             }
         """.trimIndent()
-
         return mockMvc.perform(
             post("/admin/login")
                 .contentType(MediaType.APPLICATION_JSON)

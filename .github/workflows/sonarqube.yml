@@ -5,6 +5,7 @@ on:
     branches: [ main, 'feature/*' ]
     paths:
       - 'backend/**'
+      - '.github/workflows/**'
   pull_request:
     branches: [ main ]
     paths:
@@ -52,7 +53,7 @@ jobs:
         run: ./gradlew build -x test
         env:
           SPRING_PROFILES_ACTIVE: test
-          SPRING_DATASOURCE_URL: jdbc:h2:mem:testdb;MODE=`MySQL;
+          SPRING_DATASOURCE_URL: jdbc:h2:mem:testdb;MODE=MySQL;
           SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.h2.Driver
           SPRING_DATASOURCE_USERNAME: sa
           SPRING_JPA_HIBERNATE_DDL_AUTO: create-drop
@@ -74,13 +75,23 @@ jobs:
           KAKAO_LOGOUT_REDIRECT_URI: http://localhost:8080/auth/kakao/callback/
           CLIENT_BASE_URL: http://localhost:3000
 
-      - name: Generate JaCoCo Report
+      - name: Generate JaCoCo XML Report
         run: ./gradlew jacocoTestReport -x test
         continue-on-error: true
+
+      - name: Check if JaCoCo XML exists
+        run: |
+          if [ -f "build/reports/jacoco/test/jacocoTestReport.xml" ]; then
+            echo "JaCoCo XML report exists"
+          else
+            echo "JaCoCo XML report does not exist, generating empty report"
+            mkdir -p build/reports/jacoco/test
+            echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?><report name=\"backend\"></report>" > build/reports/jacoco/test/jacocoTestReport.xml
+          fi
 
       - name: SonarQube Analysis
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        run: ./gradlew sonarqube --info
+        run: ./gradlew sonarqube --info --stacktrace

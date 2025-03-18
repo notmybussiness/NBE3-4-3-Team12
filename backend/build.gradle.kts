@@ -127,12 +127,19 @@ sonarqube {
         property("sonar.projectKey", "backend")
         property("sonar.projectName", "NBE3-4-3-Team12")
         property("sonar.sourceEncoding", "UTF-8")
-        property("sonar.sources", "src/main/java")
-        property("sonar.tests", "src/test/java")
-        property("sonar.java.binaries", "build/classes/java/main")
-        property("sonar.java.test.binaries", "build/classes/java/test")
-        property("sonar.java.libraries", configurations.runtimeClasspath.get().files)
-        property("sonar.java.test.libraries", configurations.testRuntimeClasspath.get().files)
+
+        // 여기가 중요합니다 - 문자열 대신 리스트로 지정
+        property("sonar.sources", listOf("src/main/java"))
+        property("sonar.tests", listOf("src/test/java"))
+
+        // 바이너리 파일 경로도 리스트로 지정
+        property("sonar.java.binaries", listOf("build/classes/java/main"))
+        property("sonar.java.test.binaries", listOf("build/classes/java/test"))
+
+        // JaCoCo 보고서 경로
         property("sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/test/jacocoTestReport.xml")
+
+        // 의존성 문제 디버깅
+        property("sonar.verbose", "true")
     }
 }

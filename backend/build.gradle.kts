@@ -127,9 +127,12 @@ sonarqube {
         property("sonar.projectKey", "backend")
         property("sonar.projectName", "NBE3-4-3-Team12")
         property("sonar.sourceEncoding", "UTF-8")
-        property("sonar.sources", "src/main")
-        property("sonar.tests", "src/test")
-        property("sonar.kotlin.coverage.reportPaths", "build/reports/jacoco/test/jacocoTestReport.xml")
+        property("sonar.sources", "src/main/java")
+        property("sonar.tests", "src/test/java")
+        property("sonar.java.binaries", "build/classes/java/main")
+        property("sonar.java.test.binaries", "build/classes/java/test")
+        property("sonar.java.libraries", configurations.runtimeClasspath.get().files)
+        property("sonar.java.test.libraries", configurations.testRuntimeClasspath.get().files)
         property("sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/test/jacocoTestReport.xml")
     }
 }
